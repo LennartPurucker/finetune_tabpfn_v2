@@ -5,6 +5,7 @@ from sklearn.datasets import load_iris
 from sklearn.metrics import log_loss
 from sklearn.model_selection import train_test_split
 from tabpfn import TabPFNClassifier
+from tabpfn.config import ModelInterfaceConfig, PreprocessorConfig
 
 # Load data
 X, y = load_iris(return_X_y=True, as_frame=True)
@@ -35,10 +36,20 @@ fine_tune_tabpfn(
     use_wandb=False,  # Init wandb yourself, and set to True
 )
 
+# disables preprocessing at inference time to match fine-tuning
+no_preprocessing_inference_config = (
+  ModelInterfaceConfig(FINGERPRINT_FEATURE=False,
+                       PREPROCESS_TRANSFORMS=[PreprocessorConfig(name='none')]))
+
 # Evaluate on Test Data
-clf = TabPFNClassifier(model_path=save_path_to_fine_tuned_model).fit(X_train, y_train)
+clf = TabPFNClassifier(
+  n_estimators=1,
+  inference_config=no_preprocessing_inference_config,
+  model_path=save_path_to_fine_tuned_model).fit(X_train, y_train)
 print("Log Loss (Finetuned):", log_loss(y_test, clf.predict_proba(X_test)))
 
 # Compare to the default model
-clf = TabPFNClassifier().fit(X_train, y_train)
+clf = TabPFNClassifier(
+  n_estimators=1,
+  inference_config=no_preprocessing_inference_config).fit(X_train, y_train)
 print("Log Loss (Default):", log_loss(y_test, clf.predict_proba(X_test)))

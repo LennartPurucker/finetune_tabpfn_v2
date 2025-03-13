@@ -332,7 +332,8 @@ def fine_tune_tabpfn(
                 validation_loss = validate_tabpfn_fn(model=model)
 
             # -- Check tuning state
-            is_best = validation_loss < best_validation_loss
+            is_best = (
+                validation_loss > best_validation_loss if validation_metric.greater_is_better else validation_loss < best_validation_loss)
             early_stop_no_imp = adaptive_es.update(
                 cur_round=(step_i - skipped_steps) // fts.update_every_n_steps,
                 is_best=is_best,

@@ -23,7 +23,7 @@ from finetuning_scripts.constant_utils import (
 from finetuning_scripts.data_classes import FineTuneSetup, FineTuneStepResults
 from finetuning_scripts.metric_utils.ag_metrics import get_metric
 from finetuning_scripts.training_utils.ag_early_stopping import AdaptiveES
-from finetuning_scripts.training_utils.data_utils import get_data_loader, to_numpy
+from finetuning_scripts.training_utils.data_utils import get_data_loader
 from finetuning_scripts.training_utils.model_utils import save_model
 from finetuning_scripts.training_utils.training_loss import compute_loss, get_loss
 from finetuning_scripts.training_utils.validation_utils import validate_tabpfn

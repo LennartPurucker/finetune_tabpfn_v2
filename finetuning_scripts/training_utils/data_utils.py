@@ -122,9 +122,6 @@ class TabularDataset(Dataset):
             y_test=self.y_train[test_idx],
         )
 
-def to_numpy(x):
-    return x.values if hasattr(x, "values") else x
-
 def get_data_loader(
     *,
     X_train: pd.DataFrame,
@@ -161,8 +158,8 @@ def get_data_loader(
     DataLoader
         Data loader.
     """
-    X_train = torch.tensor(to_numpy(X_train.copy())).float()
-    y_train = torch.tensor(to_numpy(y_train.copy())).reshape(-1, 1).float()
+    X_train = torch.tensor(X_train.copy().values).float()
+    y_train = torch.tensor(y_train.copy().values).reshape(-1, 1).float()
     dataset = TabularDataset(
         X_train=X_train,
         y_train=y_train,

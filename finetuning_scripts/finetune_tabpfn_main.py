@@ -23,7 +23,7 @@ from finetuning_scripts.constant_utils import (
 from finetuning_scripts.data_classes import FineTuneSetup, FineTuneStepResults
 from finetuning_scripts.metric_utils.ag_metrics import get_metric
 from finetuning_scripts.training_utils.ag_early_stopping import AdaptiveES
-from finetuning_scripts.training_utils.data_utils import get_data_loader
+from finetuning_scripts.training_utils.data_utils import get_data_loader, to_numpy
 from finetuning_scripts.training_utils.model_utils import save_model
 from finetuning_scripts.training_utils.training_loss import compute_loss, get_loss
 from finetuning_scripts.training_utils.validation_utils import validate_tabpfn
@@ -242,14 +242,14 @@ def fine_tune_tabpfn(
         model_for_validation.memory_saving_mode = False
     validate_tabpfn_fn = partial(
         validate_tabpfn,
-        X_train=torch.tensor(X_train.values)
+        X_train=torch.tensor(to_numpy(X_train))
         .reshape(X_train.shape[0], 1, X_train.shape[1])
         .float(),
-        y_train=torch.tensor(y_train.values).reshape(y_train.shape[0], 1, 1).float(),
-        X_val=torch.tensor(X_val.values)
+        y_train=torch.tensor(to_numpy(y_train)).reshape(y_train.shape[0], 1, 1).float(),
+        X_val=torch.tensor(to_numpy(X_val))
         .reshape(X_val.shape[0], 1, X_val.shape[1])
         .float(),
-        y_val=torch.tensor(y_val.values).reshape(y_val.shape[0], 1, 1).float(),
+        y_val=torch.tensor(to_numpy(y_val)).reshape(y_val.shape[0], 1, 1).float(),
         validation_metric=validation_metric,
         model_forward_fn=model_forward_fn,
         task_type=task_type,

@@ -59,15 +59,15 @@ def fine_tune_tabpfn(
     finetuning_config: dict,
     validation_metric: SupportedValidationMetric,
     # Input Data
-    X_train: pd.DataFrame,
-    y_train: pd.Series,
+    X_train: pd.DataFrame | np.ndarray,
+    y_train: pd.Series | np.ndarray,
     categorical_features_index: list[int] | None,
     task_type: TaskType,
     device: SupportedDevice,
     use_multiple_gpus: bool = False,
     multiple_device_ids: Sequence[Union[int, torch.device]] | None  = None,
-    X_val: pd.DataFrame | None = None,
-    y_val: pd.Series | None = None,
+    X_val: pd.DataFrame | np.ndarray | None = None,
+    y_val: pd.Series | np.ndarray | None = None,
     random_seed: int = 42,
     # Other
     logger_level: int = 20,
@@ -110,6 +110,10 @@ def fine_tune_tabpfn(
     multiple_device_ids: Sequence[Union[int, torch.device]] | None
         GPU ids to use when use_multiple_gpus is True.
         Will use all available GPUs if None.
+    X_val: pd.DataFrame | np.ndarray | None
+        Optional validation features. If not provided, will be split from the training set.
+    y_val: pd.Series | np.ndarray | None
+        Optional validation target. If not provided, will be split from the training set.
     random_seed: int
         The random seed to control the randomness.
     logger_level: int
@@ -124,10 +128,23 @@ def fine_tune_tabpfn(
         for validation metric calculation.
     model_for_validation: TabPFNClassifier | TabPFNRegressor
         Optional TabPFN model which will be used for validation if use_sklearn_interface_for_validation is True.
-        Tha passed model should not be fitted, it is used to configure the
+        The passed model should not be fitted, it is used to configure the
         preprocessing pipeline.
     """
     st_time = time.time()
+
+    # Coerce input data into pandas structures
+    if not isinstance(X_train, pd.DataFrame):
+        X_train = pd.DataFrame(X_train)
+
+    if not isinstance(y_train, pd.Series):
+        y_train = pd.Series(y_train)
+
+    if X_val is not None and not isinstance(X_val, pd.DataFrame):
+        X_val = pd.DataFrame(X_val)
+
+    if y_val is not None and not isinstance(y_val, pd.Series):
+        y_val = pd.Series(y_val)
 
     # Control logging
     logger.setLevel(logger_level)

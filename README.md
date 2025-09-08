@@ -1,3 +1,10 @@
+# ⚠️ This Code is Outdated and not Maintained
+
+This repository contains code to finetune TabPFNv2 and its package `tabpfn<2.1`. 
+It is not actively maintained or updated. Please check for an alternative source to fine-tune the newest version of TabPFN.
+
+The code and scripts can still be used to fine-tune TabPFN, but you may need to address compatibility issues with the TabPFN package. 
+
 # Finetuning TabPFN 
 
 Heyho, this is code I use for finetuning [TabPFN(v2)](https://github.com/PriorLabs/TabPFN) on **ONE** downstream 
